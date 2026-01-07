@@ -1,9 +1,11 @@
 # mostsimilar & matchtext
-Directory-scale and sample-based text similarity tools from the Linux command line, porting, significantly altering and greatly enhancing the excellent https://github.com/srogatch/TextMatching C++ .NET repo.
+Directory-scale and sample-based text similarity tools from the Linux command line, porting, significantly altering and greatly enhancing the excellent https://github.com/srogatch/TextMatching C++ .NET repo. Test datasets from that repository are used here.
 
 `mostsimilar` provides directory-wide best matches via pairwise comparisons.
 
 `matchtext` performs single sample vs repository match scoring.
+
+**mostsimilar is very useful in RAG pipelines to remove duplicate documents that have different MD5/SHA-256/SHA-512 hashes but same/similar contents. C/C++ ensures very respectable performance given the hungry nature of the task.**
 
 ## Overview
 - Both tools process a whitelist of extensions (see `MatchText/Utils.cpp`).
@@ -50,13 +52,12 @@ Behavior
 - Progress lines include the active thread count during file loading and match computation.
 - Paths in the CSV/output are masked by replacing the parent directory of the input directory with `.../`.
 
-Test dataset: `Data/RepoWithSample` contains the original repo plus
-`FAIRY TALES By The Brothers Grimm.txt` so its row can be compared to the
+Test dataset: `Data/RepoWithSample` contains the original repo plus `FAIRY TALES By The Brothers Grimm.txt` so its row can be compared to the
 `matchtext` output.
 
 Example output (`./build/mostsimilar Data/RepoWithSample`):
 
-Rows are sorted by score (descending).
+NB: Rows are sorted by score (descending).
 
 | File | Most similar | Score |
 | --- | --- | --- |
@@ -93,12 +94,9 @@ Example output (`./build/mostsimilar Data/RepoWithSample --hash`):
 | `.../The Iliad of Homer.txt` | `.../MOBY-DICK or, THE WHALE.txt` | `0.72656250` |
 | `.../BEOWULF - AN ANGLO-SAXON EPIC POEM.txt` | `.../The Iliad of Homer.txt` | `0.67968750` |
 
-Scores are normalized to [0, 1] for both methods, where 1.0 means identical. TF-IDF cosine
-similarity down-weights common words, while SimHash focuses on token presence rather than
-frequency, which makes its scores discrete (multiples of 1/128) and creates more ties. That
-tends to reshuffle the ordering compared to TF-IDF similarity, and can elevate different
-nearest neighbors even when the corpus is the same. Stop-word removal also shifts the
-ordering by reducing common-word noise.
+* Scores are normalized to [0, 1] for both methods, where 1.0 means identical. 
+* TF-IDF cosine similarity down-weights common words, while SimHash focuses on token presence rather than frequency, which makes its scores discrete (multiples of 1/128) and creates more ties. 
+* That tends to reshuffle the ordering compared to TF-IDF similarity, and can elevate different nearest neighbors even when the corpus is the same. Stop-word removal also shifts the ordering by reducing common-word noise.
 
 ## matchtext
 Windows:
@@ -111,8 +109,7 @@ Ubuntu:
 ./build/matchtext <Sample File> <Repository Directory> [--recursive] [--hash] [--threads N] [--safe] [--no-convert]
 ```
 
-Below is the output for sample "FAIRY TALES By The Brothers Grimm" against a repository of 10 other books
-using TF-IDF cosine similarity:
+Below is the output for sample "FAIRY TALES By The Brothers Grimm" against a repository of 10 other books using TF-IDF cosine similarity:
 ```
 0.66242753 Data/Repo/THE ADVENTURES OF SHERLOCK HOLMES.txt
 0.64461773 Data/Repo/A TALE OF TWO CITIES - A STORY OF THE FRENCH REVOLUTION.txt
@@ -145,14 +142,10 @@ Here the whole repository is listed, starting from most similar texts down to le
 # Appendix: Scoring Methods
 
 ## Tokenization and stop words
-Files are decoded as UTF-8 and tokenized by splitting on whitespace, punctuation, and
-control characters. Tokens are lowercased using the current locale. Common English, French,
-and Spanish stop words are removed before scoring to reduce noise from very frequent terms.
+Files are decoded as UTF-8 and tokenized by splitting on whitespace, punctuation, and control characters. Tokens are lowercased using the current locale. Common English, French, and Spanish stop words are removed before scoring to reduce noise from very frequent terms.
 
 ## TF-IDF cosine similarity (default)
-For the default method, each document is represented as a TF-IDF vector and compared with
-cosine similarity. The IDF weight is computed from just the two documents being compared
-(no corpus-wide statistics are used).
+For the default method, each document is represented as a TF-IDF vector and compared with cosine similarity. The IDF weight is computed from just the two documents being compared (no corpus-wide statistics are used).
 
 Definitions (for a token `t`):
 - `tf(t, doc) = count(t, doc) / total_tokens(doc)`
@@ -165,11 +158,10 @@ $$
 \\mathrm{sim}(A, B) = \\frac{\\sum_{t \\in V} w(t, A)\\, w(t, B)}{\\sqrt{\\sum_{t \\in V} w(t, A)^2}\\, \\sqrt{\\sum_{t \\in V} w(t, B)^2}}
 $$
 
-This yields a cosine similarity in `[0, 1]` where higher values mean closer matches.
-Because IDF is computed from the pair, rare tokens within that pair are emphasized while
-shared high-frequency tokens are down-weighted.
+This yields a cosine similarity in `[0, 1]` where higher values mean closer matches. Because IDF is computed from the pair, rare tokens within that pair are emphasized while shared high-frequency tokens are down-weighted.
 
 Example:
+
 Document A: "the cat sat on the mat"
 Document B: "the cat sat on the rug"
 After stop-word removal: A = "cat sat mat", B = "cat sat rug"
@@ -190,13 +182,14 @@ Worked numeric example (natural log, values rounded):
 - Cosine similarity: 0.7584 / (1.1507 * 1.1507) ≈ 0.573
 
 ## SimHash similarity (--hash)
-SimHash turns each document into a 128-bit signature. Each token is hashed (FNV-1a),
-weighted by its count, and accumulated into 128 signed totals; the sign of each total
-decides the final bit. Similarity is computed as:
+SimHash turns each document into a 128-bit signature. Each token is hashed (FNV-1a), weighted by its count, and accumulated into 128 signed totals; the sign of each total decides the final bit. Similarity is computed as:
+
 `1 - (HammingDistance(sigA, sigB) / 128)`.
+
 This yields discrete steps (multiples of 1/128), so ties are more common.
 
 More explicitly, for each token `t` with count `c(t)` and 128-bit hash `h(t)`:
+
 $$
 s_i = \\sum_t c(t) \\cdot \\begin{cases}
 1 & \\text{if bit } i \\text{ of } h(t) \\text{ is } 1 \\\\
@@ -213,9 +206,7 @@ $$
 \\mathrm{sim}(A, B) = 1 - \\frac{\\mathrm{HammingDistance}(\\mathrm{sig}_A, \\mathrm{sig}_B)}{128}
 $$
 
-SimHash reflects token presence patterns rather than full frequency distributions, which is
-why its scores are coarse and often tied.
+SimHash reflects token presence patterns rather than full frequency distributions, which is why its scores are coarse and often tied.
 
 ## Score orientation
-Both methods report similarity in `[0, 1]`, where `1.0` means identical content according to
-the chosen method. No dataset-wide normalization is applied.
+Both methods report similarity in `[0, 1]`, where `1.0` means identical content according to the chosen method. No dataset-wide normalization is applied.
